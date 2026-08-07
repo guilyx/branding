@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 32" width="140" height="32" role="img" aria-label="guilyx">
+  <path d="M16 8.5 L8.5 21 L23.5 21 Z" fill="none" stroke="currentColor" stroke-width="1.1" opacity="0.45"/>
+  <g fill="currentColor">
+    <circle cx="16" cy="8.5" r="2.1"/>
+    <circle cx="8.5" cy="21" r="2.1"/>
+    <circle cx="23.5" cy="21" r="2.1"/>
+  </g>
+  <text x="40" y="21" fill="currentColor" font-family="ui-monospace, 'JetBrains Mono', 'SF Mono', monospace" font-size="14" letter-spacing="0.02em">guilyx</text>
+</svg>

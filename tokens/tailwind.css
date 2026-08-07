@@ -1,0 +1,24 @@
+/**
+ * Ink & Iris — Tailwind CSS v4 theme block.
+ * Paste into the project stylesheet after `@import "tailwindcss";`.
+ * Source of truth: guilyx/branding · brand/palette.md
+ */
+@theme {
+  --color-bg: #0d0e12;
+  --color-bg-raised: #15171d;
+  --color-surface: #15171d;
+  --color-line: #252833;
+  --color-heading: #e4e6ec;
+  --color-body: #a5aab8;
+  --color-muted: #7c8291;
+  --color-faint: #555b69;
+  --color-accent: #8b95f0;
+  --color-accent-soft: rgba(139, 149, 240, 0.08);
+  --color-agent: #7c8291;
+
+  --font-display: "Space Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", monospace;
+
+  --ease-swift: cubic-bezier(0.645, 0.045, 0.355, 1);
+}
