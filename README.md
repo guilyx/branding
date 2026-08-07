@@ -55,3 +55,12 @@ overall shape — owes a real debt to
 structural devices documented here are hers; see
 [`research/differentiation.md`](research/differentiation.md) for the full
 accounting of what was borrowed, what was replaced, and why.
+
+## Social card
+
+![social card](assets/social-card.png)
+
+The 1200×630 card used for Open Graph on elejeune.me. Built from the site's own
+parts — the flock as a still, the mark, and the hero spec block — so a shared
+link and the page it opens read as the same object. Source lives in the v4 repo;
+regenerate it whenever the palette or the tagline changes.
