@@ -1,29 +1,31 @@
 #!/usr/bin/env python3
-"""Generate the EL signature-mark proposals.
+"""Generate the EL monogram proposals.
 
-Second round. The first was ten thin-stroke line drawings and it was rejected
-on sight, correctly - that is the visual language of an icon set, not of a
-personal mark.
+Round three. The first was thin fussy line icons; the second overcorrected into
+heavy italic forms with diagonal speed-cuts, which reads as esports rather than
+as a modern mark. Both were rejected, and both for the same underlying reason:
+decoration standing in for structure.
 
-What the reference marks (Jumpman, Federer's RF, Kobe's sheath, CR7) actually
-share, and what this round is built on:
+This round is built on one rule instead - **everything lands on the grid**.
 
-  Solid mass, not outline.  Weight is presence. A 2.4px stroke has none.
-  One fused figure.         The letters are a single shape, not two adjacent
-                            glyphs. Federer's R and F share a spine and a cut.
-  Contrast.                 Thick stems against thin arms. Uniform weight reads
-                            as an icon; modulated weight reads as a mark.
-  Subtractive.              The RF monogram removes lines rather than adding
-                            them, and its counters do as much work as its
-                            strokes.
-  A signature move.         Jumpman is a silhouette of the thing the person is
-                            known for. Here that is flight - hence the lean and
-                            the swept terminals.
+    UNIT   4       the module
+    MARGIN 6       breathing room on every side; the mark never touches the box
+    bar height == gap height == UNIT
 
-Every mark below is a closed filled path. None of them use `stroke`.
+That single equality does most of the work. An E of three bars and two gaps at
+one module each is exactly five modules tall, so the rhythm is even by
+construction rather than by eye, and the counters come out identical without
+being tuned. It is the Bauhaus/Swiss construction, and it is why those marks
+still look calm sixty years on.
+
+What is deliberately absent, because it is what made the last two rounds look
+rough: no italic lean, no diagonal terminals, no arrowheads, no dots, no seams,
+no tapers. Every terminal is square or fully round, and the same one is used
+throughout a given mark. If a mark needs a flourish to be interesting, it is
+not finished.
 
     python3 generate.py            # writes svg/
-    python3 generate.py --check    # colour audit only
+    python3 generate.py --check    # audit only
 """
 
 import argparse
@@ -33,23 +35,29 @@ import re
 ACCENT = "#8b95f0"
 GROUND = "#0d0e12"
 
+UNIT = 4.0
+M = 6.0                       # margin: the mark lives inside 6..26
+X0, X1 = M, 32.0 - M
+Y0, Y1 = M, 32.0 - M
+
+# The five horizontal bands of the E: bar, gap, bar, gap, bar.
+BAND = [Y0 + i * UNIT for i in range(6)]   # 6, 10, 14, 18, 22, 26
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "svg")
-
-LEAN = 9.0  # degrees of forward shear; the flight lean
 
 
 # --- primitives -----------------------------------------------------------
 
+def r(x, y, w, h, rx=None, colour="currentColor"):
+    a = f' rx="{rx:g}"' if rx else ""
+    return (f'<rect x="{x:g}" y="{y:g}" width="{w:g}" height="{h:g}"'
+            f'{a} fill="{colour}"/>')
+
+
 def path(d, rule=None, colour="currentColor"):
     fr = f' fill-rule="{rule}"' if rule else ""
     return f'<path d="{d}" fill="{colour}"{fr}/>'
-
-
-def leaned(body, deg=LEAN, cx=16, cy=16):
-    """Shear about the centre so the mark leans forward without translating."""
-    return (f'  <g transform="translate({cx} {cy}) skewX({-deg:g}) '
-            f'translate({-cx} {-cy})">\n{body}\n  </g>')
 
 
 def svg(body, label, size=32):
@@ -67,132 +75,118 @@ def tile(body, colour=ACCENT):
             + paint(body, colour))
 
 
-def ind(parts, n=4):
+def ind(parts, n=2):
     return "\n".join(" " * n + s for s in parts)
 
 
-# --- the solid EL ligature ------------------------------------------------
-#
-# One closed outline. Heavy stem, arms to the right, and - the fix that makes
-# the L legible - a deliberately uneven rhythm: the gap above the foot is
-# roughly twice the gap between the two upper arms, and the foot runs longest.
-# The eye reads stem-plus-foot as L first, then picks up the upper arms as E.
-# With even gaps it reads as an E with a wide base and the L disappears.
-
-STEM_L, STEM_R = 6.0, 12.4
-CUT = 2.3
-
-
-def el_path(top_y=(5.5, 9.8), mid_y=(12.4, 16.4), bot_y=(21.5, 26.5),
-            top=22.5, mid=19.5, bot=27.0, cut=CUT):
-    t0, t1 = top_y; m0, m1 = mid_y; b0, b1 = bot_y
-    return (f"M{STEM_L} {t0} H{top} L{top - cut:g} {t1} H{STEM_R} "
-            f"V{m0} H{mid} L{mid - cut:g} {m1} H{STEM_R} "
-            f"V{b0} H{bot} L{bot - cut:g} {b1} H{STEM_L} Z")
+# The EL as an outline, for the marks that knock it out of a solid.
+# Same grid: stem one module wide, bars one module tall, foot running longest.
+EL_OUTLINE = (f"M{X0} {BAND[0]} H{X0 + 14} V{BAND[1]} H{X0 + UNIT} "
+              f"V{BAND[2]} H{X0 + 12} V{BAND[3]} H{X0 + UNIT} "
+              f"V{BAND[4]} H{X1} V{BAND[5]} H{X0} Z")
 
 
 # --- concepts -------------------------------------------------------------
-# Eight silhouettes, not one silhouette eight times. Squint and they should
-# still be told apart.
 
-def a_slipstream():
-    """The base mark: one fused mass, leaning, terminals cut on the diagonal."""
-    return ([path(el_path())],
-            [path(el_path(top=22.0, mid=18.5, bot=26.0, cut=1.5))])
-
-
-def b_corner():
-    """Two masses: a heavy L angle, with a compact E set into its corner."""
-    ell = "M4.5 4 H11 V21.2 H28 L25.4 27 H4.5 Z"
-    e = ("M14.6 6 H25.5 L23.6 9.4 H18.6 V11.6 H23.5 L21.6 14.8 H18.6 "
-         "V16.6 H25.5 L23.6 19.6 H14.6 Z")
-    ellb = "M4.5 4 H11.4 V21.2 H28 L26.2 27 H4.5 Z"
-    eb = ("M14.6 6 H25.5 L24.0 9.6 H19.0 V11.6 H23.5 L22.0 14.8 H19.0 "
-          "V16.4 H25.5 L24.0 19.6 H14.6 Z")
-    return [path(ell + " " + e)], [path(ellb + " " + eb)]
+def a_module():
+    """The reference construction. Bar height equals gap height equals one module."""
+    a = [r(X0, BAND[0], 14, UNIT), r(X0, BAND[2], 12, UNIT),
+         r(X0, BAND[4], X1 - X0, UNIT), r(X0, BAND[0], UNIT, Y1 - Y0)]
+    return a, a
 
 
-def c_contra():
-    """Extreme contrast: a slab stem, arms pared to a third of its weight."""
-    d = ("M5 4.5 H14 V27.5 H5 Z "
-         "M14 4.5 H27 L25.2 7.6 H14 Z "
-         "M14 14.4 H23 L21.2 17.5 H14 Z "
-         "M14 24.4 H29 L27.2 27.5 H14 Z")
-    db = ("M5 4.5 H14.4 V27.5 H5 Z "
-          "M14.4 4.5 H26.6 L25.4 8.0 H14.4 Z "
-          "M14.4 14.2 H22.6 L21.4 17.7 H14.4 Z "
-          "M14.4 24.0 H28.6 L27.4 27.5 H14.4 Z")
-    return [path(d)], [path(db)]
+def b_round():
+    """Same grid, fully round terminals. The radius is exactly half a module."""
+    k = UNIT / 2
+    a = [r(X0, BAND[0], 14, UNIT, k), r(X0, BAND[2], 12, UNIT, k),
+         r(X0, BAND[4], X1 - X0, UNIT, k), r(X0, BAND[0], UNIT, Y1 - Y0, k)]
+    return a, a
 
 
-def d_stack():
-    """E over L, offset - a staggered silhouette rather than a single column."""
-    e = ("M5 3.5 H21.5 L19.6 7 H10 V9.2 H18.5 L16.6 12.5 H10 "
-         "V14.8 H21.5 L19.6 18.2 H5 Z")
-    ell = "M13 19.5 H18.5 V25 H29 L27.1 28.5 H13 Z"
-    eb = ("M5 3.5 H21 L19.6 7.2 H10.4 V9.2 H18 L16.6 12.7 H10.4 "
-          "V14.6 H21 L19.6 18.2 H5 Z")
-    ellb = "M12.6 19.5 H18.6 V25 H29 L27.6 28.5 H12.6 Z"
-    return [path(e + " " + ell)], [path(eb + " " + ellb)]
+def c_detached():
+    """Bars lifted clear of the stem by half a module. The join is implied."""
+    g = UNIT / 2
+    s = X0 + UNIT + g
+    a = [r(X0, BAND[0], UNIT, Y1 - Y0),
+         r(s, BAND[0], X1 - s, UNIT), r(s, BAND[2], X1 - s - 4, UNIT),
+         r(s, BAND[4], X1 - s, UNIT)]
+    b = [r(X0, BAND[0], UNIT, Y1 - Y0),
+         r(s, BAND[0], X1 - s, UNIT), r(s, BAND[2], X1 - s - 3, UNIT),
+         r(s, BAND[4], X1 - s, UNIT)]
+    return a, b
 
 
-def e_vector():
-    """The foot runs out into an arrowhead. The mark points where it is going."""
-    base = el_path(bot=23.0)
-    head = "M22.0 21.5 L29.5 24.0 L22.0 26.5 Z"
-    baseb = el_path(bot=22.5, cut=1.5)
-    headb = "M21.6 21.5 L29.0 24.0 L21.6 26.5 Z"
-    return [path(base + " " + head)], [path(baseb + " " + headb)]
+def d_negative():
+    """The mark is the void. A calm square, not a leaning slab."""
+    block = "M3 3 H29 V29 H3 Z"
+    inner = (f"M9 9 H23 V13 H13 V15 H21 V19 H13 V21 H23 V25 H9 Z")
+    small = (f"M8.5 8.5 H23.5 V13 H12.5 V15 H21 V19.5 H12.5 V21 H23.5 V25.5 H8.5 Z")
+    return ([path(block + " " + inner, rule="evenodd")],
+            [path("M2.5 2.5 H29.5 V29.5 H2.5 Z " + small, rule="evenodd")])
 
 
-def f_wing():
-    """Arms raked hard from root to tip. Squinted at, a swept wing, not a letter."""
-    d = ("M6 4.5 H26.5 L18.6 9.6 H12.4 V12.6 H22.5 L16.4 16.6 H12.4 "
-         "V20.6 H29 L20.5 27.5 H6 Z")
-    db = ("M6 4.5 H25.5 L19.2 9.8 H12.4 V12.6 H21.5 L17.0 16.6 H12.4 "
-          "V20.6 H28 L21.5 27.5 H6 Z")
-    return [path(d)], [path(db)]
+def e_corner():
+    """Two elements, one weight: an L angle, and an E of three bars beside it."""
+    w = 3.0
+    g = 2.0
+    ex = 14.0
+    a = [r(X0, Y0, w, Y1 - Y0), r(X0, Y1 - w, X1 - X0, w)]
+    a += [r(ex, Y0 + i * (w + g), X1 - ex - (2 if i == 1 else 0), w)
+          for i in range(3)]
+    return a, a
 
 
-def g_shield():
-    """EL held in a crest. The only enclosed mark in the set."""
-    crest = "M3.5 3 H28.5 V18.5 L16 29.5 L3.5 18.5 Z"
-    cut = el_path(top_y=(7.5, 10.4), mid_y=(12.2, 15.0), bot_y=(17.6, 20.5),
-                  top=21.5, mid=19.0, bot=23.5, cut=1.6)
-    cutb = el_path(top_y=(7.5, 10.6), mid_y=(12.4, 15.0), bot_y=(17.4, 20.5),
-                   top=21.0, mid=18.6, bot=23.0, cut=1.1)
-    return ([path(crest + " " + cut, rule="evenodd")],
-            [path(crest + " " + cutb, rule="evenodd")])
+def f_line():
+    """Even geometric monoline. One weight, square joins, nothing added."""
+    w = 3.0
+    a = [r(X0, Y0, w, Y1 - Y0), r(X0, Y0, 13, w),
+         r(X0, 16 - w / 2, 11, w), r(X0, Y1 - w, X1 - X0, w)]
+    b = [r(X0, Y0, 3.6, Y1 - Y0), r(X0, Y0, 13, 3.6),
+         r(X0, 16 - 1.8, 11, 3.6), r(X0, Y1 - 3.6, X1 - X0, 3.6)]
+    return a, b
 
 
-def h_counter():
-    """The letterform is the hole. Maximum contrast, and it holds up smallest."""
-    block = "M2 2 H30 V30 H2 Z"
-    cut = el_path(top_y=(6.5, 10.2), mid_y=(12.6, 16.0), bot_y=(20.4, 24.6),
-                  top=21.0, mid=18.5, bot=24.5, cut=2.0)
-    small = el_path(top_y=(6.5, 10.4), mid_y=(12.8, 16.0), bot_y=(20.2, 24.6),
-                    top=20.5, mid=18.0, bot=24.0, cut=1.4)
-    return ([path(block + " " + cut, rule="evenodd")],
-            [path("M1.5 1.5 H30.5 V30.5 H1.5 Z " + small, rule="evenodd")])
+def g_apex():
+    """E sits on top, the stem runs on past it and turns. Both letters, one figure."""
+    w = 3.4
+    bars = [Y0, Y0 + 6.3, Y0 + 12.6]
+    a = [r(X0, Y0, w, Y1 - Y0)]
+    a += [r(X0, y, 13, w) for y in bars]
+    a += [r(X0, Y1 - w, X1 - X0, w)]
+    return a, a
+
+
+def h_tone():
+    """The L at full strength, the E ghosted behind it.
+
+    Hierarchy carried by tone rather than by shape, which is the one device
+    the existing swarm mark already uses - its link path sits at 0.45 so the
+    nodes read as the subject. Same grid as the rest, no extra geometry.
+    """
+    ghost = ' opacity="0.45"'
+    ell = [r(X0, BAND[0], UNIT, Y1 - Y0), r(X0, BAND[4], X1 - X0, UNIT)]
+    e = [r(X0, BAND[0], 14, UNIT).replace("/>", ghost + "/>"),
+         r(X0, BAND[2], 12, UNIT).replace("/>", ghost + "/>")]
+    return e + ell, e + ell
 
 
 CONCEPTS = [
-    ("a-slipstream", "EL slipstream", a_slipstream,
-     "One fused mass, leaning, terminals cut on the diagonal. The base mark."),
-    ("b-corner", "EL corner", b_corner,
-     "Two masses: a heavy L angle with a compact E set into its corner."),
-    ("c-contra", "EL contra", c_contra,
-     "A slab stem against arms pared to a third of its weight."),
-    ("d-stack", "EL stack", d_stack,
-     "E over L, offset - a staggered silhouette rather than one column."),
-    ("e-vector", "EL vector", e_vector,
-     "The foot runs out into an arrowhead. The mark points where it is going."),
-    ("f-wing", "EL wing", f_wing,
-     "Arms raked hard from root to tip. Squinted at, a swept wing."),
-    ("g-shield", "EL crest", g_shield,
-     "EL held in a crest - the only enclosed mark in the set."),
-    ("h-counter", "EL counter", h_counter,
-     "The letterform is the hole. Maximum contrast, holds up smallest."),
+    ("a-module", "EL module", a_module,
+     "The reference. Bar height equals gap height equals one module."),
+    ("b-round", "EL round", b_round,
+     "The same grid with fully round terminals - radius exactly half a module."),
+    ("c-detached", "EL detached", c_detached,
+     "Bars lifted clear of the stem by half a module. The join is implied."),
+    ("d-negative", "EL negative", d_negative,
+     "The mark is the void. A calm square rather than a leaning slab."),
+    ("e-corner", "EL corner", e_corner,
+     "Two elements at one weight: an L angle, and an E of three bars beside it."),
+    ("f-line", "EL line", f_line,
+     "Even geometric monoline. One weight, square joins, nothing added."),
+    ("g-apex", "EL apex", g_apex,
+     "E on top, the stem running past it and turning. Both letters, one figure."),
+    ("h-tone", "EL tone", h_tone,
+     "L at full strength, E ghosted behind it. Hierarchy by tone, not shape."),
 ]
 
 
@@ -202,10 +196,10 @@ def build():
     for slug, label, fn, _ in CONCEPTS:
         primary, small = fn()
         files = {
-            "a": svg(paint(leaned(ind(primary))), f"{label} - primary"),
-            "b": svg(paint(leaned(ind(small))), f"{label} - small cut", size=20),
-            "c": svg(tile(leaned(ind(small))), f"{label} - tile"),
-            "d": svg(leaned(ind(primary)), f"{label} - mono"),
+            "a": svg(paint(ind(primary)), f"{label} - primary"),
+            "b": svg(paint(ind(small)), f"{label} - small cut", size=20),
+            "c": svg(tile(ind(small)), f"{label} - tile"),
+            "d": svg(ind(primary), f"{label} - mono"),
         }
         for suffix, content in files.items():
             p = os.path.join(OUT, f"{slug}-{suffix}.svg")
@@ -222,11 +216,17 @@ def check(paths):
         src = open(p, encoding="utf-8").read()
         stray = {c for c in re.findall(r"#[0-9a-fA-F]{6}", src)
                  if c.lower() not in allowed}
-        if stray or "Gradient" in src or "url(#" in src:
-            print(f"FAIL {os.path.basename(p)}: {stray or 'gradient'}")
-            bad += 1
+        problems = []
+        if stray:
+            problems.append(f"off-brand colour {stray}")
+        if "Gradient" in src or "url(#" in src:
+            problems.append("gradient")
         if "stroke=" in src:
-            print(f"FAIL {os.path.basename(p)}: uses stroke; these are solid forms")
+            problems.append("stroke; these are solid forms")
+        if "skew" in src or "rotate(" in src:
+            problems.append("sheared or rotated; this round is upright")
+        if problems:
+            print(f"FAIL {os.path.basename(p)}: {'; '.join(problems)}")
             bad += 1
     print(f"{len(paths) - bad}/{len(paths)} clean")
     return bad
@@ -234,7 +234,6 @@ def check(paths):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("--check", action="store_true")
     ap.parse_args()
     files = build()
     print(f"wrote {len(files)} files to {OUT}")

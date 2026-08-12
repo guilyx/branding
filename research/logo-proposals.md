@@ -1,93 +1,95 @@
-# Logo proposals — EL signature marks
+# Logo proposals — EL monograms
 
 **Status:** proposals, nothing adopted. The swarm mark in
 [`../brand/logo.md`](../brand/logo.md) remains current until one of these
 replaces it.
 
-Eight marks built on the initials **EL**, in the register of a personal
-signature mark rather than an icon. Files in
+Eight EL monograms, minimal and upright. Files in
 [`logo-proposals/svg/`](logo-proposals/svg/), regenerate with
 [`logo-proposals/generate.py`](logo-proposals/generate.py).
 
-Four variations each:
+Four variations each: `-a` primary, `-b` small cut, `-c` favicon tile,
+`-d` `currentColor` mono for inlining.
 
-| Suffix | What it is |
-| :--- | :--- |
-| `-a` | Primary. Accent, full detail. |
-| `-b` | Small cut. Simplified, tuned for 16px and below. |
-| `-c` | Favicon tile. |
-| `-d` | `currentColor` mono, for inlining. |
+## Three rounds, and what each got wrong
 
-## The first round, and why it was scrapped
+| Round | What it was | Why it failed |
+| :--- | :--- | :--- |
+| 1 | Ten thin-stroke line drawings — waypoints, tf frames, costmaps, behaviour trees | The visual language of an icon set. A 2.4px stroke has no presence, and letters drawn as adjacent glyphs never fuse into a figure. |
+| 2 | Eight heavy italic forms with diagonal speed-cuts | Overcorrection. Chunky, leaning and cut reads as esports, not as a modern mark. |
+| 3 | This set | — |
 
-Round one was ten thin-stroke line drawings — waypoints, tf frames, costmaps,
-behaviour trees. It was rejected on sight, and correctly: **that is the visual
-language of an icon set, not of a personal mark.** A 2.4px stroke has no
-presence, and letters drawn as adjacent glyphs never fuse into a figure.
+Both earlier rounds failed for the same underlying reason: **decoration standing
+in for structure.** Round one added dots and arrowheads to make thin shapes
+interesting; round two added lean and rake to make heavy shapes interesting.
+Neither fixed the letterform.
 
-What the reference marks actually share:
+## The rule this round is built on
 
-| Principle | What it means here |
-| :--- | :--- |
-| **Solid mass, not outline** | Weight is presence. Every mark below is a closed filled path; none use `stroke`. |
-| **One fused figure** | Federer's R and F share a spine and a cut. The letters are one shape, not two. |
-| **Contrast** | Thick stems against thin arms. Uniform weight reads as an icon. |
-| **Subtractive** | The RF monogram *removes* lines rather than adding them; its counters do as much work as its strokes. |
-| **A signature move** | Jumpman is a silhouette of the thing the person is known for. Here that is flight — hence the 9° lean and the swept terminals. |
+Everything lands on the grid:
 
-## Making the L legible
+```
+UNIT    4      the module
+MARGIN  6      breathing room on every side; the mark never touches the box
+bar height == gap height == UNIT
+```
 
-The hard problem in a fused EL: if E and L share a spine, you get an E with a
-long bottom bar and the L vanishes.
+That single equality does most of the work. An E of three bars and two gaps at
+one module each is exactly five modules tall, so the rhythm comes out even **by
+construction rather than by eye**, and the counters are identical without being
+tuned. It is the Bauhaus/Swiss construction, and it is why those marks still
+look calm decades on.
 
-The fix in most of these is **rhythm, not geometry** — the gap above the foot
-runs roughly twice the gap between the two upper arms, and the foot runs
-longest. The eye takes stem-plus-foot as an L first, then picks up the upper
-arms as an E. With even gaps it collapses back into a wide-based E every time.
-
-**It works better in some than others, and that is the main thing to judge.**
-Two of the eight show two distinct letters unambiguously; the rest read as a
-strong single glyph that *implies* the L. Both are legitimate — Jumpman is not
-a letter at all — but it is a real choice, not a detail.
+Deliberately absent, because it is what made the last two rounds look rough:
+no italic lean, no diagonal terminals, no arrowheads, no dots, no seams, no
+tapers. Every terminal is square or fully round, and a given mark uses only
+one of the two. `generate.py --check` fails the build on a stroke, a gradient,
+an off-brand colour, or any shear or rotation.
 
 ## The eight
 
-| # | Mark | Idea | Two letters? | 12px |
-| :--- | :--- | :--- | :--- | :--- |
-| A | **slipstream** | One fused mass, leaning, diagonal terminals. The base. | implied | clean |
-| B | **corner** | A heavy L angle with a compact E in its corner. | **yes** | clean |
-| C | **contra** | A slab stem against arms a third its weight. | implied | clean |
-| D | **stack** | E over L, offset. | **yes** | clean |
-| E | **vector** | The foot runs out into an arrowhead. | implied | clean |
-| F | **wing** | Arms raked hard root to tip. | implied | clean |
-| G | **crest** | EL held in a shield — the only enclosed mark. | implied | soft |
-| H | **counter** | The letterform is the hole. | implied | **best** |
+| # | Mark | Idea |
+| :--- | :--- | :--- |
+| A | **module** | The reference construction. Bar height equals gap height equals one module. |
+| B | **round** | The same grid, fully round terminals — radius exactly half a module. |
+| C | **detached** | Bars lifted clear of the stem by half a module. The join is implied. |
+| D | **negative** | The mark is the void. A calm square, not a leaning slab. |
+| E | **corner** | Two elements at one weight: an L angle, and an E of three bars beside it. |
+| F | **line** | Even geometric monoline. One weight, square joins, nothing added. |
+| G | **apex** | E on top, the stem running past it and turning. Both letters, one figure. |
+| H | **tone** | L at full strength, E ghosted behind it. Hierarchy by tone, not shape. |
 
-### Notes worth having before choosing
+All eight hold at 12px.
 
-**B reads "LE", not "EL".** The heavy angle sits on the left, so the eye takes
-the L first. That may be a feature — *LEJEUNE Erwin* is the formal order — but
-it is not what was asked for, and flipping the composition would undo the
-corner idea that makes the mark work. Worth a decision rather than a fix.
+### Notes before choosing
 
-**D is the most legible and the least athletic.** Stacking guarantees both
-letters read, at the cost of the single-gesture quality the others have.
+**G is the most legible as two letters.** The E finishes, the stem carries on
+past it and turns — so the L is a separate event rather than a longer bottom
+bar. A, B, C, D and F all read as a strong E with the L implied by the foot,
+which is a legitimate choice but a different one.
 
-**H holds up smallest by a clear margin**, because the figure is carried by the
-largest possible area of contrast rather than by the width of a stroke. It is
-also the loudest, and the only one that would fight a busy page.
+**E reads "LE", not "EL"** — the angle sits left so the eye takes it first.
+*LEJEUNE Erwin* is the formal order, so this may be a feature; flipping it
+would undo the composition that makes the mark work.
 
-**G is the only enclosed mark**, which puts it closest to a sports crest and
-furthest from the rest of the system — `brand/logo.md` currently forbids
-containers outside the favicon tile, so adopting it means amending that rule.
+**H is the only one that reuses an existing brand device.** The swarm mark
+already sets its link path at 0.45 so the nodes read as the subject; this
+applies the same idea to the two letters. It is also the quietest, and the
+first to disappear against a busy background.
+
+**D holds up smallest** — the figure is carried by area rather than by stroke
+width — and is the loudest of the set.
+
+**F is the lightest.** At 3 units against the 4-unit grid it is the one that
+would sit most comfortably next to body text, and the one most at risk of
+looking thin when embroidered or engraved.
 
 ## Constraints kept
 
 Ink & Iris only — `#8b95f0` on `#0d0e12`. No second hue, no gradients, no
-strokes. All 32 files pass the audit in `generate.py --check`, which fails on
-any of the three.
+strokes, nothing sheared. All 32 files pass `generate.py --check`.
 
-These are deliberately not run through `validate_mark.py`: that validator
-encodes the swarm mark's exact geometry and would reject all eight by
-construction. If one is adopted, that script needs rewriting against the new
-geometry, and `brand/logo.md` needs a new construction table and rationale.
+These are not run through `validate_mark.py`: it encodes the swarm mark's exact
+geometry and would reject all eight by construction. Adopting one means
+rewriting that validator against the new geometry and giving `brand/logo.md` a
+new construction table and rationale.
