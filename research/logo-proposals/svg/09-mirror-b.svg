@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="20" height="20" role="img" aria-label="EEK mirrored spine - small cut">
+    <path d="M16 6.5 V25.5" fill="none" stroke="#8b95f0" stroke-width="3.0" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M16 7 H9.5 M16 16 H12 M16 25 H9.5" fill="none" stroke="#8b95f0" stroke-width="3.0" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M16 16 L23 8.5 M16 16 L23 23.5" fill="none" stroke="#8b95f0" stroke-width="3.0" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

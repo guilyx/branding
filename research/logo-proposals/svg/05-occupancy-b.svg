@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="20" height="20" role="img" aria-label="EL occupancy grid - small cut">
+    <rect x="3.45" y="0.2" width="5.6" height="5.6" rx="0.9" fill="#8b95f0"/>
+    <rect x="9.95" y="0.2" width="5.6" height="5.6" rx="0.9" fill="#8b95f0"/>
+    <rect x="16.45" y="0.2" width="5.6" height="5.6" rx="0.9" fill="#8b95f0"/>
+    <rect x="3.45" y="6.7" width="5.6" height="5.6" rx="0.9" fill="#8b95f0"/>
+    <rect x="3.45" y="13.2" width="5.6" height="5.6" rx="0.9" fill="#8b95f0"/>
+    <rect x="9.95" y="13.2" width="5.6" height="5.6" rx="0.9" fill="#8b95f0"/>
+    <rect x="3.45" y="19.7" width="5.6" height="5.6" rx="0.9" fill="#8b95f0"/>
+    <rect x="3.45" y="26.2" width="5.6" height="5.6" rx="0.9" fill="#8b95f0"/>
+    <rect x="9.95" y="26.2" width="5.6" height="5.6" rx="0.9" fill="#8b95f0"/>
+    <rect x="16.45" y="26.2" width="5.6" height="5.6" rx="0.9" fill="#8b95f0"/>
+</svg>
