@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="EL capsule - tile">
+  <rect width="32" height="32" rx="6" fill="#0d0e12"/>
+  <path d="M7.6 8 L7.6 24" fill="none" stroke="#8b95f0" stroke-width="3" stroke-linecap="round"/>
+  <rect x="10.8" y="5.2" width="10.5" height="5.6" rx="2.8" fill="#8b95f0"/>
+  <rect x="10.8" y="13.2" width="8" height="5.6" rx="2.8" fill="#8b95f0"/>
+  <rect x="10.8" y="21.2" width="13.5" height="5.6" rx="2.8" fill="#8b95f0"/>
+</svg>

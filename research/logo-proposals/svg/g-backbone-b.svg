@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="20" height="20" role="img" aria-label="EL backbone - small cut">
+  <path d="M9 6.4 L9 25.4" fill="none" stroke="#8b95f0" stroke-width="3.4" stroke-linecap="round"/>
+  <path d="M9 8 L18.5 8" fill="none" stroke="#8b95f0" stroke-width="3.4" stroke-linecap="round"/>
+  <path d="M9 14 L17 14" fill="none" stroke="#8b95f0" stroke-width="3.4" stroke-linecap="round"/>
+  <path d="M9 20 L18.5 20" fill="none" stroke="#8b95f0" stroke-width="3.4" stroke-linecap="round"/>
+  <path d="M9 25.4 L23.5 25.4" fill="none" stroke="#8b95f0" stroke-width="3.4" stroke-linecap="round"/>
+  <circle cx="18.5" cy="8" r="2.9" fill="#8b95f0"/>
+  <circle cx="17" cy="14" r="2.9" fill="#8b95f0"/>
+  <circle cx="18.5" cy="20" r="2.9" fill="#8b95f0"/>
+</svg>

@@ -1,31 +1,30 @@
 #!/usr/bin/env python3
-"""Generate the EL monogram proposals.
+"""Generate the EL / EK monogram proposals - graph and orchestration reading.
 
-Round three. The first was thin fussy line icons; the second overcorrected into
-heavy italic forms with diagonal speed-cuts, which reads as esports rather than
-as a modern mark. Both were rejected, and both for the same underlying reason:
-decoration standing in for structure.
+Round four. The previous three were pure letterforms; this one starts from what
+the letters already are.
 
-This round is built on one rule instead - **everything lands on the grid**.
+An E is three horizontal bars hanging off a vertical. That is not a shape that
+needs graph imagery added to it - it *is* a layered graph: a trunk with three
+ranks. So nothing here decorates a letter with nodes. The graph is the
+letterform, which is the difference between this and round one, where dots were
+sprinkled onto strokes to make them interesting.
 
-    UNIT   4       the module
-    MARGIN 6       breathing room on every side; the mark never touches the box
-    bar height == gap height == UNIT
+The two readings of the second letter:
 
-That single equality does most of the work. An E of three bars and two gaps at
-one module each is exactly five modules tall, so the rhythm is even by
-construction rather than by eye, and the counters come out identical without
-being tuned. It is the Bauhaus/Swiss construction, and it is why those marks
-still look calm sixty years on.
+    L is the backbone.  The vertical the ranks hang off, running past the last
+                        of them and turning - an orchestrator trunk with a base.
+    K is the fan-out.   Its vertex is a branch node and its arms are edges to
+                        children. A K drawn as a graph is a fork, exactly.
 
-What is deliberately absent, because it is what made the last two rounds look
-rough: no italic lean, no diagonal terminals, no arrowheads, no dots, no seams,
-no tapers. Every terminal is square or fully round, and the same one is used
-throughout a given mark. If a mark needs a flourish to be interesting, it is
-not finished.
+Kept from round three, because that register was right: strict grid, upright,
+generous margins, one weight per element class, nothing decorative. The three
+ranks sit on y = 8, 16, 24 in every mark, so they can be compared directly.
+
+Edges are strokes here - a graph has edges, and drawing them as filled quads
+would be pedantry. They are heavy and round-capped, never hairlines.
 
     python3 generate.py            # writes svg/
-    python3 generate.py --check    # audit only
 """
 
 import argparse
@@ -35,13 +34,10 @@ import re
 ACCENT = "#8b95f0"
 GROUND = "#0d0e12"
 
-UNIT = 4.0
-M = 6.0                       # margin: the mark lives inside 6..26
-X0, X1 = M, 32.0 - M
-Y0, Y1 = M, 32.0 - M
-
-# The five horizontal bands of the E: bar, gap, bar, gap, bar.
-BAND = [Y0 + i * UNIT for i in range(6)]   # 6, 10, 14, 18, 22, 26
+RANK = (8.0, 16.0, 24.0)   # the three ranks, on grid, in every mark
+EW = 3.0                   # edge weight
+NR = 2.9                   # node radius - deliberately wider than the edge,
+                           # so a node reads as a node and not as a thickening
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "svg")
@@ -49,15 +45,18 @@ OUT = os.path.join(HERE, "svg")
 
 # --- primitives -----------------------------------------------------------
 
-def r(x, y, w, h, rx=None, colour="currentColor"):
-    a = f' rx="{rx:g}"' if rx else ""
-    return (f'<rect x="{x:g}" y="{y:g}" width="{w:g}" height="{h:g}"'
-            f'{a} fill="{colour}"/>')
+def edge(x1, y1, x2, y2, w=EW, colour="currentColor"):
+    return (f'<path d="M{x1:g} {y1:g} L{x2:g} {y2:g}" fill="none" '
+            f'stroke="{colour}" stroke-width="{w:g}" stroke-linecap="round"/>')
 
 
-def path(d, rule=None, colour="currentColor"):
-    fr = f' fill-rule="{rule}"' if rule else ""
-    return f'<path d="{d}" fill="{colour}"{fr}/>'
+def node(x, y, r=NR, colour="currentColor"):
+    return f'<circle cx="{x:g}" cy="{y:g}" r="{r:g}" fill="{colour}"/>'
+
+
+def pill(x, y, w, h, colour="currentColor"):
+    return (f'<rect x="{x:g}" y="{y:g}" width="{w:g}" height="{h:g}" '
+            f'rx="{h / 2:g}" fill="{colour}"/>')
 
 
 def svg(body, label, size=32):
@@ -79,114 +78,128 @@ def ind(parts, n=2):
     return "\n".join(" " * n + s for s in parts)
 
 
-# The EL as an outline, for the marks that knock it out of a solid.
-# Same grid: stem one module wide, bars one module tall, foot running longest.
-EL_OUTLINE = (f"M{X0} {BAND[0]} H{X0 + 14} V{BAND[1]} H{X0 + UNIT} "
-              f"V{BAND[2]} H{X0 + 12} V{BAND[3]} H{X0 + UNIT} "
-              f"V{BAND[4]} H{X1} V{BAND[5]} H{X0} Z")
-
-
 # --- concepts -------------------------------------------------------------
 
-def a_module():
-    """The reference construction. Bar height equals gap height equals one module."""
-    a = [r(X0, BAND[0], 14, UNIT), r(X0, BAND[2], 12, UNIT),
-         r(X0, BAND[4], X1 - X0, UNIT), r(X0, BAND[0], UNIT, Y1 - Y0)]
-    return a, a
+def a_rank():
+    """Trunk with three ranks, each terminating in a node. The plainest reading."""
+    t = [edge(8, 6.2, 8, 25.8), edge(8, RANK[0], 18, RANK[0]),
+         edge(8, RANK[1], 15, RANK[1]), edge(8, RANK[2], 23, RANK[2]),
+         node(18, RANK[0]), node(15, RANK[1]), node(23, RANK[2])]
+    b = [edge(8, 6.2, 8, 25.8, 3.4), edge(8, RANK[0], 17.5, RANK[0], 3.4),
+         edge(8, RANK[1], 15, RANK[1], 3.4), edge(8, RANK[2], 22.5, RANK[2], 3.4),
+         node(17.5, RANK[0], 3.1), node(15, RANK[1], 3.1), node(22.5, RANK[2], 3.1)]
+    return t, b
 
 
-def b_round():
-    """Same grid, fully round terminals. The radius is exactly half a module."""
-    k = UNIT / 2
-    a = [r(X0, BAND[0], 14, UNIT, k), r(X0, BAND[2], 12, UNIT, k),
-         r(X0, BAND[4], X1 - X0, UNIT, k), r(X0, BAND[0], UNIT, Y1 - Y0, k)]
-    return a, a
+def b_fork():
+    """One branch node, three edges out. The K read: a fork is what a K is."""
+    t = [edge(8.5, 16, 22, RANK[0]), edge(8.5, 16, 22, RANK[1]),
+         edge(8.5, 16, 22, RANK[2]),
+         node(22, RANK[0], 2.6), node(22, RANK[1], 2.6), node(22, RANK[2], 2.6),
+         node(8.5, 16, 3.8)]
+    b = [edge(8.5, 16, 21.5, RANK[0], 3.4), edge(8.5, 16, 21.5, RANK[1], 3.4),
+         edge(8.5, 16, 21.5, RANK[2], 3.4),
+         node(21.5, RANK[0], 2.9), node(21.5, RANK[1], 2.9), node(21.5, RANK[2], 2.9),
+         node(8.5, 16, 4.1)]
+    return t, b
 
 
-def c_detached():
-    """Bars lifted clear of the stem by half a module. The join is implied."""
-    g = UNIT / 2
-    s = X0 + UNIT + g
-    a = [r(X0, BAND[0], UNIT, Y1 - Y0),
-         r(s, BAND[0], X1 - s, UNIT), r(s, BAND[2], X1 - s - 4, UNIT),
-         r(s, BAND[4], X1 - s, UNIT)]
-    b = [r(X0, BAND[0], UNIT, Y1 - Y0),
-         r(s, BAND[0], X1 - s, UNIT), r(s, BAND[2], X1 - s - 3, UNIT),
-         r(s, BAND[4], X1 - s, UNIT)]
-    return a, b
+def c_bus():
+    """Nodes at the junctions instead of the tips - three taps off a backbone."""
+    t = [edge(8, 5.6, 8, 26.4, 2.4), edge(8, RANK[0], 19, RANK[0]),
+         edge(8, RANK[1], 16, RANK[1]), edge(8, RANK[2], 24, RANK[2]),
+         node(8, RANK[0], 3.3), node(8, RANK[1], 3.3), node(8, RANK[2], 3.3)]
+    b = [edge(8, 5.6, 8, 26.4, 2.8), edge(8, RANK[0], 18.5, RANK[0], 3.4),
+         edge(8, RANK[1], 16, RANK[1], 3.4), edge(8, RANK[2], 23.5, RANK[2], 3.4),
+         node(8, RANK[0], 3.6), node(8, RANK[1], 3.6), node(8, RANK[2], 3.6)]
+    return t, b
 
 
-def d_negative():
-    """The mark is the void. A calm square, not a leaning slab."""
-    block = "M3 3 H29 V29 H3 Z"
-    inner = (f"M9 9 H23 V13 H13 V15 H21 V19 H13 V21 H23 V25 H9 Z")
-    small = (f"M8.5 8.5 H23.5 V13 H12.5 V15 H21 V19.5 H12.5 V21 H23.5 V25.5 H8.5 Z")
-    return ([path(block + " " + inner, rule="evenodd")],
-            [path("M2.5 2.5 H29.5 V29.5 H2.5 Z " + small, rule="evenodd")])
+def d_capsule():
+    """The ranks are node capsules on a spine. The register of a workflow graph."""
+    h = 5.0
+    t = [edge(7.5, 8, 7.5, 24, 2.6),
+         pill(10.5, RANK[0] - h / 2, 11, h), pill(10.5, RANK[1] - h / 2, 8.5, h),
+         pill(10.5, RANK[2] - h / 2, 14, h)]
+    b = [edge(7.6, 8, 7.6, 24, 3.0),
+         pill(10.8, RANK[0] - 2.8, 10.5, 5.6), pill(10.8, RANK[1] - 2.8, 8, 5.6),
+         pill(10.8, RANK[2] - 2.8, 13.5, 5.6)]
+    return t, b
 
 
-def e_corner():
-    """Two elements, one weight: an L angle, and an E of three bars beside it."""
-    w = 3.0
-    g = 2.0
-    ex = 14.0
-    a = [r(X0, Y0, w, Y1 - Y0), r(X0, Y1 - w, X1 - X0, w)]
-    a += [r(ex, Y0 + i * (w + g), X1 - ex - (2 if i == 1 else 0), w)
-          for i in range(3)]
-    return a, a
+def e_pipeline():
+    """A node at both ends of every rank. Three stages, explicitly bounded."""
+    t = [edge(8, 8, 8, 24, 2.6),
+         edge(8, RANK[0], 20, RANK[0]), edge(8, RANK[1], 17, RANK[1]),
+         edge(8, RANK[2], 24, RANK[2]),
+         node(8, RANK[0], 2.5), node(8, RANK[1], 2.5), node(8, RANK[2], 2.5),
+         node(20, RANK[0], 2.5), node(17, RANK[1], 2.5), node(24, RANK[2], 2.5)]
+    b = [edge(8, 8, 8, 24, 3.0),
+         edge(8, RANK[0], 19.5, RANK[0], 3.4), edge(8, RANK[1], 17, RANK[1], 3.4),
+         edge(8, RANK[2], 23.5, RANK[2], 3.4),
+         node(19.5, RANK[0], 3.0), node(17, RANK[1], 3.0), node(23.5, RANK[2], 3.0)]
+    return t, b
 
 
-def f_line():
-    """Even geometric monoline. One weight, square joins, nothing added."""
-    w = 3.0
-    a = [r(X0, Y0, w, Y1 - Y0), r(X0, Y0, 13, w),
-         r(X0, 16 - w / 2, 11, w), r(X0, Y1 - w, X1 - X0, w)]
-    b = [r(X0, Y0, 3.6, Y1 - Y0), r(X0, Y0, 13, 3.6),
-         r(X0, 16 - 1.8, 11, 3.6), r(X0, Y1 - 3.6, X1 - X0, 3.6)]
-    return a, b
+def f_ek():
+    """E and K as two graphs side by side - ranks, then the fork they feed."""
+    t = [edge(6, 7.4, 6, 24.6, 2.6),
+         edge(6, RANK[0], 12, RANK[0]), edge(6, RANK[1], 12, RANK[1]),
+         edge(6, RANK[2], 12, RANK[2]),
+         edge(18, 6.4, 18, 25.6, 2.6),
+         edge(18, 16, 26, 7.6), edge(18, 16, 26, 24.4),
+         node(18, 16, 3.2), node(26, 7.6, 2.4), node(26, 24.4, 2.4)]
+    b = [edge(6.5, 7.4, 6.5, 24.6, 3.0),
+         edge(6.5, RANK[0], 12, RANK[0], 3.2), edge(6.5, RANK[1], 12, RANK[1], 3.2),
+         edge(6.5, RANK[2], 12, RANK[2], 3.2),
+         edge(19, 6.4, 19, 25.6, 3.0),
+         edge(19, 16, 26, 8.4, 3.2), edge(19, 16, 26, 23.6, 3.2),
+         node(19, 16, 3.4)]
+    return t, b
 
 
-def g_apex():
-    """E sits on top, the stem runs on past it and turns. Both letters, one figure."""
-    w = 3.4
-    bars = [Y0, Y0 + 6.3, Y0 + 12.6]
-    a = [r(X0, Y0, w, Y1 - Y0)]
-    a += [r(X0, y, 13, w) for y in bars]
-    a += [r(X0, Y1 - w, X1 - X0, w)]
-    return a, a
+def g_backbone():
+    """E finishes, the trunk runs past it and turns. The L is a separate event."""
+    t = [edge(9, 6.4, 9, 25.4), edge(9, 8, 19, 8), edge(9, 14, 17, 14),
+         edge(9, 20, 19, 20), edge(9, 25.4, 24, 25.4),
+         node(19, 8, 2.6), node(17, 14, 2.6), node(19, 20, 2.6), node(24, 25.4, 2.6)]
+    b = [edge(9, 6.4, 9, 25.4, 3.4), edge(9, 8, 18.5, 8, 3.4),
+         edge(9, 14, 17, 14, 3.4), edge(9, 20, 18.5, 20, 3.4),
+         edge(9, 25.4, 23.5, 25.4, 3.4),
+         node(18.5, 8, 2.9), node(17, 14, 2.9), node(18.5, 20, 2.9)]
+    return t, b
 
 
-def h_tone():
-    """The L at full strength, the E ghosted behind it.
-
-    Hierarchy carried by tone rather than by shape, which is the one device
-    the existing swarm mark already uses - its link path sits at 0.45 so the
-    nodes read as the subject. Same grid as the rest, no extra geometry.
-    """
-    ghost = ' opacity="0.45"'
-    ell = [r(X0, BAND[0], UNIT, Y1 - Y0), r(X0, BAND[4], X1 - X0, UNIT)]
-    e = [r(X0, BAND[0], 14, UNIT).replace("/>", ghost + "/>"),
-         r(X0, BAND[2], 12, UNIT).replace("/>", ghost + "/>")]
-    return e + ell, e + ell
+def h_orchestrator():
+    """One node holds the work and hands it out. The others only receive."""
+    t = [edge(9.5, 9.5, 22, RANK[0]), edge(9.5, 9.5, 20, RANK[1]),
+         edge(9.5, 9.5, 23, RANK[2]),
+         node(22, RANK[0], 2.4), node(20, RANK[1], 2.4), node(23, RANK[2], 2.4),
+         node(9.5, 9.5, 4.4)]
+    b = [edge(9.5, 9.5, 21.5, RANK[0], 3.4), edge(9.5, 9.5, 20, RANK[1], 3.4),
+         edge(9.5, 9.5, 22.5, RANK[2], 3.4),
+         node(21.5, RANK[0], 2.8), node(20, RANK[1], 2.8), node(22.5, RANK[2], 2.8),
+         node(9.5, 9.5, 4.8)]
+    return t, b
 
 
 CONCEPTS = [
-    ("a-module", "EL module", a_module,
-     "The reference. Bar height equals gap height equals one module."),
-    ("b-round", "EL round", b_round,
-     "The same grid with fully round terminals - radius exactly half a module."),
-    ("c-detached", "EL detached", c_detached,
-     "Bars lifted clear of the stem by half a module. The join is implied."),
-    ("d-negative", "EL negative", d_negative,
-     "The mark is the void. A calm square rather than a leaning slab."),
-    ("e-corner", "EL corner", e_corner,
-     "Two elements at one weight: an L angle, and an E of three bars beside it."),
-    ("f-line", "EL line", f_line,
-     "Even geometric monoline. One weight, square joins, nothing added."),
-    ("g-apex", "EL apex", g_apex,
-     "E on top, the stem running past it and turning. Both letters, one figure."),
-    ("h-tone", "EL tone", h_tone,
-     "L at full strength, E ghosted behind it. Hierarchy by tone, not shape."),
+    ("a-rank", "EL rank", a_rank,
+     "Trunk with three ranks, each ending in a node. The plainest reading."),
+    ("b-fork", "EK fork", b_fork,
+     "One branch node, three edges out. A K drawn as a graph is a fork."),
+    ("c-bus", "EL bus", c_bus,
+     "Nodes at the junctions, not the tips - three taps off a backbone."),
+    ("d-capsule", "EL capsule", d_capsule,
+     "The ranks are node capsules on a spine. Workflow-graph register."),
+    ("e-pipeline", "EL pipeline", e_pipeline,
+     "A node at both ends of every rank. Three stages, explicitly bounded."),
+    ("f-ek", "EK pair", f_ek,
+     "E and K as two graphs side by side - ranks, then the fork they feed."),
+    ("g-backbone", "EL backbone", g_backbone,
+     "E finishes, the trunk runs past it and turns. The L is a separate event."),
+    ("h-orchestrator", "EL orchestrator", h_orchestrator,
+     "One node holds the work and hands it out. The others only receive."),
 ]
 
 
@@ -221,8 +234,8 @@ def check(paths):
             problems.append(f"off-brand colour {stray}")
         if "Gradient" in src or "url(#" in src:
             problems.append("gradient")
-        if "stroke=" in src:
-            problems.append("stroke; these are solid forms")
+        if re.search(r'stroke-width="([01](\.\d+)?|2(\.[0-3])?)"', src):
+            problems.append("hairline edge; edges carry weight in this round")
         if "skew" in src or "rotate(" in src:
             problems.append("sheared or rotated; this round is upright")
         if problems:

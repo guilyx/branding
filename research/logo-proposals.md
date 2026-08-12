@@ -1,95 +1,88 @@
-# Logo proposals — EL monograms
+# Logo proposals — EL / EK as graphs
 
 **Status:** proposals, nothing adopted. The swarm mark in
 [`../brand/logo.md`](../brand/logo.md) remains current until one of these
 replaces it.
 
-Eight EL monograms, minimal and upright. Files in
+Eight monograms read as graphs. Files in
 [`logo-proposals/svg/`](logo-proposals/svg/), regenerate with
 [`logo-proposals/generate.py`](logo-proposals/generate.py).
 
 Four variations each: `-a` primary, `-b` small cut, `-c` favicon tile,
-`-d` `currentColor` mono for inlining.
+`-d` `currentColor` mono.
 
-## Three rounds, and what each got wrong
+## The idea
 
-| Round | What it was | Why it failed |
-| :--- | :--- | :--- |
-| 1 | Ten thin-stroke line drawings — waypoints, tf frames, costmaps, behaviour trees | The visual language of an icon set. A 2.4px stroke has no presence, and letters drawn as adjacent glyphs never fuse into a figure. |
-| 2 | Eight heavy italic forms with diagonal speed-cuts | Overcorrection. Chunky, leaning and cut reads as esports, not as a modern mark. |
-| 3 | This set | — |
+An E is three horizontal bars hanging off a vertical. That is not a shape that
+needs graph imagery *added* to it — **it already is a layered graph**: a trunk
+with three ranks. So nothing here decorates a letter with nodes, which is
+precisely what made round one fail. The graph is the letterform.
 
-Both earlier rounds failed for the same underlying reason: **decoration standing
-in for structure.** Round one added dots and arrowheads to make thin shapes
-interesting; round two added lean and rake to make heavy shapes interesting.
-Neither fixed the letterform.
+Two readings of the second letter, both built:
 
-## The rule this round is built on
+| Letter | Reading |
+| :--- | :--- |
+| **L** | The backbone. The vertical the ranks hang off, running past the last of them and turning — an orchestrator trunk with a base. |
+| **K** | The fan-out. Its vertex is a branch node, its arms are edges to children. A K drawn as a graph *is* a fork. |
 
-Everything lands on the grid:
-
-```
-UNIT    4      the module
-MARGIN  6      breathing room on every side; the mark never touches the box
-bar height == gap height == UNIT
-```
-
-That single equality does most of the work. An E of three bars and two gaps at
-one module each is exactly five modules tall, so the rhythm comes out even **by
-construction rather than by eye**, and the counters are identical without being
-tuned. It is the Bauhaus/Swiss construction, and it is why those marks still
-look calm decades on.
-
-Deliberately absent, because it is what made the last two rounds look rough:
-no italic lean, no diagonal terminals, no arrowheads, no dots, no seams, no
-tapers. Every terminal is square or fully round, and a given mark uses only
-one of the two. `generate.py --check` fails the build on a stroke, a gradient,
-an off-brand colour, or any shear or rotation.
+The three ranks sit at y = 8, 16, 24 in every mark, so the set can be compared
+directly. Grid discipline, upright stance and generous margins carry over from
+round three; edges are strokes, because a graph has edges and drawing them as
+filled quads would be pedantry — but they are heavy and round-capped, never
+hairlines. The audit fails the build on a hairline edge, a gradient, an
+off-brand colour, or any shear.
 
 ## The eight
 
-| # | Mark | Idea |
-| :--- | :--- | :--- |
-| A | **module** | The reference construction. Bar height equals gap height equals one module. |
-| B | **round** | The same grid, fully round terminals — radius exactly half a module. |
-| C | **detached** | Bars lifted clear of the stem by half a module. The join is implied. |
-| D | **negative** | The mark is the void. A calm square, not a leaning slab. |
-| E | **corner** | Two elements at one weight: an L angle, and an E of three bars beside it. |
-| F | **line** | Even geometric monoline. One weight, square joins, nothing added. |
-| G | **apex** | E on top, the stem running past it and turning. Both letters, one figure. |
-| H | **tone** | L at full strength, E ghosted behind it. Hierarchy by tone, not shape. |
+| # | Mark | Letters | Idea |
+| :--- | :--- | :--- | :--- |
+| A | **rank** | EL | Trunk with three ranks, each ending in a node. The plainest reading. |
+| B | **fork** | EK | One branch node, three edges out. |
+| C | **bus** | EL | Nodes at the junctions, not the tips — three taps off a backbone. |
+| D | **capsule** | EL | The ranks are node capsules on a spine. Workflow-graph register. |
+| E | **pipeline** | EL | A node at both ends of every rank. Three stages, explicitly bounded. |
+| F | **ek** | EK | E and K as two graphs side by side — ranks, then the fork they feed. |
+| G | **backbone** | EL | E finishes, the trunk runs past it and turns. |
+| H | **orchestrator** | — | One node holds the work and hands it out. The others only receive. |
 
-All eight hold at 12px.
+## Two collisions, before anything else
 
-### Notes before choosing
+**B is very close to the share icon.** One node left, edges fanning right to
+nodes, is the Android/Material share glyph with an extra child added. That is
+one of the most recognised interface symbols in the world, and a personal mark
+should not have to fight it. The idea is good; this particular arrangement of
+it is spoken for. Worth either re-composing (vertical fan, or the branch node
+on the right) or dropping.
 
-**G is the most legible as two letters.** The E finishes, the stem carries on
-past it and turns — so the L is a separate event rather than a longer bottom
-bar. A, B, C, D and F all read as a strong E with the L implied by the foot,
-which is a legitimate choice but a different one.
+**H does not read as letters at all.** It is a pleasant network glyph, and it
+is the same failure as the triskelion in round one — interesting shape, no
+initials. Kept in the set only so the comparison is honest; it should not be
+adopted as-is.
 
-**E reads "LE", not "EL"** — the angle sits left so the eye takes it first.
-*LEJEUNE Erwin* is the formal order, so this may be a feature; flipping it
-would undo the composition that makes the mark work.
+## The rest
 
-**H is the only one that reuses an existing brand device.** The swarm mark
-already sets its link path at 0.45 so the nodes read as the subject; this
-applies the same idea to the two letters. It is also the quietest, and the
-first to disappear against a busy background.
+**F is the standout.** It is the only mark in four rounds that reads
+unambiguously as two letters *and* carries the concept — the K is a genuine
+fork, vertex node and all, and the E's three ranks feed it. If the brief is
+"initials plus orchestration", this is the closest thing to a direct answer.
 
-**D holds up smallest** — the figure is carried by area rather than by stroke
-width — and is the loudest of the set.
+**G is the most legible EL.** The E completes, then the trunk carries on past
+it and turns, so the L is a separate event rather than a longer bottom bar.
 
-**F is the lightest.** At 3 units against the 4-unit grid it is the one that
-would sit most comfortably next to body text, and the one most at risk of
-looking thin when embroidered or engraved.
+**A, C and E are the same skeleton with the nodes moved** — tips, junctions,
+both ends. That is deliberate: it is the one axis worth testing directly,
+because it changes what the mark says. Tips read as outputs, junctions read as
+taps off a bus, both ends read as bounded stages. C is the most distinctive of
+the three; A the calmest.
+
+**D drifts toward a list icon.** Detaching the capsules from the spine costs
+the E its joins, and what is left resembles a reorder or menu glyph. Less
+severe than B, but the same category of problem.
 
 ## Constraints kept
 
-Ink & Iris only — `#8b95f0` on `#0d0e12`. No second hue, no gradients, no
-strokes, nothing sheared. All 32 files pass `generate.py --check`.
+Ink & Iris only — `#8b95f0` on `#0d0e12`. No second hue, no gradients, nothing
+sheared. All 32 files pass `generate.py --check`.
 
-These are not run through `validate_mark.py`: it encodes the swarm mark's exact
-geometry and would reject all eight by construction. Adopting one means
-rewriting that validator against the new geometry and giving `brand/logo.md` a
-new construction table and rationale.
+Adopting any of these means rewriting `validate_mark.py` against the new
+geometry and giving `brand/logo.md` a new construction table and rationale.
