@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="EL contra - tile">
+  <rect width="32" height="32" rx="6" fill="#0d0e12"/>
+  <g transform="translate(16 16) skewX(-9) translate(-16 -16)">
+    <path d="M5 4.5 H14.4 V27.5 H5 Z M14.4 4.5 H26.6 L25.4 8.0 H14.4 Z M14.4 14.2 H22.6 L21.4 17.7 H14.4 Z M14.4 24.0 H28.6 L27.4 27.5 H14.4 Z" fill="#8b95f0"/>
+  </g>
+</svg>

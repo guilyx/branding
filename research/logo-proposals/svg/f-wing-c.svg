@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="EL wing - tile">
+  <rect width="32" height="32" rx="6" fill="#0d0e12"/>
+  <g transform="translate(16 16) skewX(-9) translate(-16 -16)">
+    <path d="M6 4.5 H25.5 L19.2 9.8 H12.4 V12.6 H21.5 L17.0 16.6 H12.4 V20.6 H28 L21.5 27.5 H6 Z" fill="#8b95f0"/>
+  </g>
+</svg>

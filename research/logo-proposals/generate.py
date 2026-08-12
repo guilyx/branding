@@ -1,22 +1,29 @@
 #!/usr/bin/env python3
-"""Generate the initials-based logo proposals.
+"""Generate the EL signature-mark proposals.
 
-Ten concepts, three variations each, all on the same 32x32 grid and the same
-Ink & Iris accent, so the comparison is between ideas rather than between
-execution quality.
+Second round. The first was ten thin-stroke line drawings and it was rejected
+on sight, correctly - that is the visual language of an icon set, not of a
+personal mark.
 
-    python3 generate.py            # writes svg/ next to this file
+What the reference marks (Jumpman, Federer's RF, Kobe's sheath, CR7) actually
+share, and what this round is built on:
+
+  Solid mass, not outline.  Weight is presence. A 2.4px stroke has none.
+  One fused figure.         The letters are a single shape, not two adjacent
+                            glyphs. Federer's R and F share a spine and a cut.
+  Contrast.                 Thick stems against thin arms. Uniform weight reads
+                            as an icon; modulated weight reads as a mark.
+  Subtractive.              The RF monogram removes lines rather than adding
+                            them, and its counters do as much work as its
+                            strokes.
+  A signature move.         Jumpman is a silhouette of the thing the person is
+                            known for. Here that is flight - hence the lean and
+                            the swept terminals.
+
+Every mark below is a closed filled path. None of them use `stroke`.
+
+    python3 generate.py            # writes svg/
     python3 generate.py --check    # colour audit only
-
-Variations, for every concept:
-    -a  primary, accent on transparent, full detail
-    -b  small-size cut: fewer elements, heavier stroke, tuned for 20px
-    -c  favicon tile, ground plus mark
-
-The -b cut is the one that matters. brand/logo.md records that the previous
-monogram was dropped because it did not survive being small, so every proposal
-here has to answer that objection before anything else about it is worth
-discussing.
 """
 
 import argparse
@@ -25,50 +32,33 @@ import re
 
 ACCENT = "#8b95f0"
 GROUND = "#0d0e12"
-W = 2.4          # primary stroke
-WB = 3.0         # small-cut stroke
-R = 2.0          # node radius
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "svg")
 
+LEAN = 9.0  # degrees of forward shear; the flight lean
+
 
 # --- primitives -----------------------------------------------------------
 
-def p(d, w=W, colour="currentColor", cap="round", opacity=None):
-    o = f' opacity="{opacity}"' if opacity is not None else ""
-    return (f'<path d="{d}" fill="none" stroke="{colour}" stroke-width="{w}" '
-            f'stroke-linecap="{cap}" stroke-linejoin="round"{o}/>')
+def path(d, rule=None, colour="currentColor"):
+    fr = f' fill-rule="{rule}"' if rule else ""
+    return f'<path d="{d}" fill="{colour}"{fr}/>'
 
 
-def dot(x, y, r=R, colour="currentColor"):
-    return f'<circle cx="{x:g}" cy="{y:g}" r="{r:g}" fill="{colour}"/>'
+def leaned(body, deg=LEAN, cx=16, cy=16):
+    """Shear about the centre so the mark leans forward without translating."""
+    return (f'  <g transform="translate({cx} {cy}) skewX({-deg:g}) '
+            f'translate({-cx} {-cy})">\n{body}\n  </g>')
 
 
-def ring(x, y, r, w=1.6, colour="currentColor"):
-    return (f'<circle cx="{x:g}" cy="{y:g}" r="{r:g}" fill="none" '
-            f'stroke="{colour}" stroke-width="{w}"/>')
-
-
-def rect(x, y, s, rx=0.7, colour="currentColor"):
-    return (f'<rect x="{x:g}" y="{y:g}" width="{s:g}" height="{s:g}" '
-            f'rx="{rx:g}" fill="{colour}"/>')
-
-
-def svg(body, label, size=32, view=32):
-    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {view} {view}" '
+def svg(body, label, size=32):
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" '
             f'width="{size}" height="{size}" role="img" aria-label="{label}">\n'
             f'{body}\n</svg>\n')
 
 
 def paint(body, colour=ACCENT):
-    """Resolve currentColor to a literal so the file renders standalone.
-
-    Substitution rather than a wrapping <g stroke=...>: an element-level
-    stroke="currentColor" beats a group attribute, and currentColor inside an
-    <img> resolves against the SVG's own default - black - not the host page.
-    Wrapping looks like it works right up until the file is used the normal way.
-    """
     return body.replace("currentColor", colour)
 
 
@@ -78,211 +68,174 @@ def tile(body, colour=ACCENT):
 
 
 def ind(parts, n=4):
-    pad = " " * n
-    return "\n".join(pad + s for s in parts)
+    return "\n".join(" " * n + s for s in parts)
 
 
-# --- the EL ligature, shared by most concepts -----------------------------
+# --- the solid EL ligature ------------------------------------------------
 #
-# E and L share the spine. The bottom bar runs longer than the top, which is
-# what makes the same figure read as both letters instead of just an E.
+# One closed outline. Heavy stem, arms to the right, and - the fix that makes
+# the L legible - a deliberately uneven rhythm: the gap above the foot is
+# roughly twice the gap between the two upper arms, and the foot runs longest.
+# The eye reads stem-plus-foot as L first, then picks up the upper arms as E.
+# With even gaps it reads as an E with a wide base and the L disappears.
 
-SPINE_X, TOP_Y, MID_Y, BOT_Y = 11, 7, 16, 25
-BAR_TOP, BAR_MID, BAR_BOT = 21, 18, 25
+STEM_L, STEM_R = 6.0, 12.4
+CUT = 2.3
 
-LIGATURE = f"M{BAR_TOP} {TOP_Y} H{SPINE_X} V{BOT_Y} H{BAR_BOT} M{SPINE_X} {MID_Y} H{BAR_MID}"
+
+def el_path(top_y=(5.5, 9.8), mid_y=(12.4, 16.4), bot_y=(21.5, 26.5),
+            top=22.5, mid=19.5, bot=27.0, cut=CUT):
+    t0, t1 = top_y; m0, m1 = mid_y; b0, b1 = bot_y
+    return (f"M{STEM_L} {t0} H{top} L{top - cut:g} {t1} H{STEM_R} "
+            f"V{m0} H{mid} L{mid - cut:g} {m1} H{STEM_R} "
+            f"V{b0} H{bot} L{bot - cut:g} {b1} H{STEM_L} Z")
 
 
 # --- concepts -------------------------------------------------------------
-# Each returns (primary_parts, small_parts). Both are lists of SVG strings
-# using currentColor; the wrappers above decide the actual paint.
+# Eight silhouettes, not one silhouette eight times. Squint and they should
+# still be told apart.
 
-def c01_waypoint():
-    """EL as a planned mission: the ligature is the path, the bar-ends are waypoints."""
-    a = [p(LIGATURE), dot(BAR_TOP, TOP_Y, 1.9), dot(BAR_MID, MID_Y, 1.9),
-         dot(BAR_BOT, BOT_Y, 1.9)]
-    b = [p(LIGATURE, WB), dot(BAR_TOP, TOP_Y, 2.2), dot(BAR_BOT, BOT_Y, 2.2)]
-    return a, b
+def a_slipstream():
+    """The base mark: one fused mass, leaning, terminals cut on the diagonal."""
+    return ([path(el_path())],
+            [path(el_path(top=22.0, mid=18.5, bot=26.0, cut=1.5))])
 
 
-def c02_formation():
-    """L holds the axis; the E's three bars break formation and sweep right."""
-    axis = f"M{SPINE_X} 6 V{BOT_Y} H25"
-    a = [p(axis), p("M14 8 H22", W), p("M15.5 14 H22", W), p("M17 20 H22", W)]
-    b = [p(axis, WB), p("M15 9 H22", WB), p("M17 17 H22", WB)]
-    return a, b
+def b_corner():
+    """Two masses: a heavy L angle, with a compact E set into its corner."""
+    ell = "M4.5 4 H11 V21.2 H28 L25.4 27 H4.5 Z"
+    e = ("M14.6 6 H25.5 L23.6 9.4 H18.6 V11.6 H23.5 L21.6 14.8 H18.6 "
+         "V16.6 H25.5 L23.6 19.6 H14.6 Z")
+    ellb = "M4.5 4 H11.4 V21.2 H28 L26.2 27 H4.5 Z"
+    eb = ("M14.6 6 H25.5 L24.0 9.6 H19.0 V11.6 H23.5 L22.0 14.8 H19.0 "
+          "V16.4 H25.5 L24.0 19.6 H14.6 Z")
+    return [path(ell + " " + e)], [path(ellb + " " + eb)]
 
 
-def c03_frame():
-    """The L is a tf frame - the two axes every robotics stack starts from."""
-    axes = "M11 6 V25.5 H26"
-    heads = "M8.6 8.4 L11 5.6 L13.4 8.4 M23.6 23.1 L26.4 25.5 L23.6 27.9"
-    a = [p(axes), p(heads, 1.9),
-         p("M11 9.5 H18.5", W), p("M11 14.5 H16", W), p("M11 19.5 H18.5", W)]
-    b = [p("M11 6 V25.5 H26", WB), p("M11 10.5 H18", WB), p("M11 17.5 H18", WB)]
-    return a, b
+def c_contra():
+    """Extreme contrast: a slab stem, arms pared to a third of its weight."""
+    d = ("M5 4.5 H14 V27.5 H5 Z "
+         "M14 4.5 H27 L25.2 7.6 H14 Z "
+         "M14 14.4 H23 L21.2 17.5 H14 Z "
+         "M14 24.4 H29 L27.2 27.5 H14 Z")
+    db = ("M5 4.5 H14.4 V27.5 H5 Z "
+          "M14.4 4.5 H26.6 L25.4 8.0 H14.4 Z "
+          "M14.4 14.2 H22.6 L21.4 17.7 H14.4 Z "
+          "M14.4 24.0 H28.6 L27.4 27.5 H14.4 Z")
+    return [path(d)], [path(db)]
 
 
-def c04_pulse():
-    """The E's middle stroke is a clock line. Embedded, and it dates the work."""
-    frame = f"M{BAR_TOP} {TOP_Y} H{SPINE_X} V{BOT_Y} H{BAR_BOT}"
-    clock = "M11 16.5 H13.5 V12.5 H17 V16.5 H20.5 V12.5 H23"
-    a = [p(frame), p(clock, 1.9)]
-    # One pulse, not two: at 14px a second cycle closes up into a solid block.
-    b = [p(frame, WB), p("M11 16 H15 V12.5 H19 V16 H22", 2.6)]
-    return a, b
+def d_stack():
+    """E over L, offset - a staggered silhouette rather than a single column."""
+    e = ("M5 3.5 H21.5 L19.6 7 H10 V9.2 H18.5 L16.6 12.5 H10 "
+         "V14.8 H21.5 L19.6 18.2 H5 Z")
+    ell = "M13 19.5 H18.5 V25 H29 L27.1 28.5 H13 Z"
+    eb = ("M5 3.5 H21 L19.6 7.2 H10.4 V9.2 H18 L16.6 12.7 H10.4 "
+          "V14.6 H21 L19.6 18.2 H5 Z")
+    ellb = "M12.6 19.5 H18.6 V25 H29 L27.6 28.5 H12.6 Z"
+    return [path(e + " " + ell)], [path(eb + " " + ellb)]
 
 
-def c05_occupancy():
-    """EL as occupied cells on a costmap. The letters are the obstacle."""
-    grid = [
-        "11110",
-        "10000",
-        "10000",
-        "11100",
-        "10000",
-        "10000",
-        "11111",
-    ]
-    cell, gap = 3.0, 0.5
-    x0 = 16 - (5 * (cell + gap) - gap) / 2
-    y0 = 16 - (7 * (cell + gap) - gap) / 2
-    a = [rect(x0 + c * (cell + gap), y0 + r * (cell + gap), cell)
-         for r, row in enumerate(grid) for c, ch in enumerate(row) if ch == "1"]
-
-    # Three cells wide is the floor. Four still merges into a smear at 14px.
-    coarse = ["111", "100", "110", "100", "111"]
-    cb, gb = 5.6, 0.9
-    xb = 16 - (4 * (cb + gb) - gb) / 2
-    yb = 16 - (5 * (cb + gb) - gb) / 2
-    b = [rect(xb + c * (cb + gb), yb + r * (cb + gb), cb, 0.9)
-         for r, row in enumerate(coarse) for c, ch in enumerate(row) if ch == "1"]
-    return a, b
+def e_vector():
+    """The foot runs out into an arrowhead. The mark points where it is going."""
+    base = el_path(bot=23.0)
+    head = "M22.0 21.5 L29.5 24.0 L22.0 26.5 Z"
+    baseb = el_path(bot=22.5, cut=1.5)
+    headb = "M21.6 21.5 L29.0 24.0 L21.6 26.5 Z"
+    return [path(base + " " + head)], [path(baseb + " " + headb)]
 
 
-def c06_trace():
-    """Routed like a PCB - 45-degree corners, vias where the bars terminate."""
-    route = ("M21 7 H12.6 L11 8.6 V23.4 L12.6 25 H25 "
-             "M11 16 H16.4 L18 16")
-    a = [p(route, 2.2), ring(21, 7, 1.9, 1.5), ring(25, 25, 1.9, 1.5),
-         ring(18, 16, 1.6, 1.4)]
-    b = [p("M21 7 H12.6 L11 8.6 V23.4 L12.6 25 H25 M11 16 H18", WB),
-         dot(21, 7, 1.9), dot(25, 25, 1.9)]
-    return a, b
+def f_wing():
+    """Arms raked hard from root to tip. Squinted at, a swept wing, not a letter."""
+    d = ("M6 4.5 H26.5 L18.6 9.6 H12.4 V12.6 H22.5 L16.4 16.6 H12.4 "
+         "V20.6 H29 L20.5 27.5 H6 Z")
+    db = ("M6 4.5 H25.5 L19.2 9.8 H12.4 V12.6 H21.5 L17.0 16.6 H12.4 "
+          "V20.6 H28 L21.5 27.5 H6 Z")
+    return [path(d)], [path(db)]
 
 
-def c07_rotor():
-    """The airframe is the ligature; every extremity carries a rotor."""
-    arms = f"M{SPINE_X} {TOP_Y} H19 M{SPINE_X} {TOP_Y} V{BOT_Y} H23 M{SPINE_X} {MID_Y} H17"
-    a = [p(arms, 2.2), ring(11, 7, 2.6), ring(21.6, 7, 2.6),
-         ring(11, 25, 2.6), ring(25.6, 25, 2.6)]
-    b = [p(f"M{SPINE_X} {TOP_Y} H18 M{SPINE_X} {TOP_Y} V{BOT_Y} H22 M{SPINE_X} {MID_Y} H16", WB),
-         dot(11, 7, 2.4), dot(25, 25, 2.4)]
-    return a, b
+def g_shield():
+    """EL held in a crest. The only enclosed mark in the set."""
+    crest = "M3.5 3 H28.5 V18.5 L16 29.5 L3.5 18.5 Z"
+    cut = el_path(top_y=(7.5, 10.4), mid_y=(12.2, 15.0), bot_y=(17.6, 20.5),
+                  top=21.5, mid=19.0, bot=23.5, cut=1.6)
+    cutb = el_path(top_y=(7.5, 10.6), mid_y=(12.4, 15.0), bot_y=(17.4, 20.5),
+                   top=21.0, mid=18.6, bot=23.0, cut=1.1)
+    return ([path(crest + " " + cut, rule="evenodd")],
+            [path(crest + " " + cutb, rule="evenodd")])
 
 
-def c08_bt_kl():
-    """KL as a behaviour tree: one root, two children, and the ground it stands on."""
-    # The K's lower arm has to stop well clear of the foot, or the two merge
-    # into a single diagonal and the mark reads as a lone K.
-    spine = "M9 6 V25 H25"
-    arms = "M9 13.5 L17 6.5 M9 13.5 L16 20.5"
-    a = [p(spine), p(arms, 2.2), dot(9, 13.5, 1.9), dot(17, 6.5, 1.9), dot(16, 20.5, 1.9)]
-    b = [p("M9 6 V25 H25", WB), p("M9 13.5 L17 7 M9 13.5 L16 20", WB)]
-    return a, b
-
-
-def c09_mirror():
-    """EEK on one spine: E reflected into E, with K's arms taking the right side.
-
-    An earlier attempt put three identical arms at 120 degrees. It made a
-    pleasant shape and read as a mechanical fitting, not as initials - which
-    is the exact failure this whole round exists to correct, so it was cut.
-    """
-    spine = "M16 6.5 V25.5"
-    left = "M16 6.5 H9 M16 16 H11.5 M16 25.5 H9"      # E, mirrored
-    right = "M16 16 L23.5 8 M16 16 L23.5 24"           # K
-    a = [p(spine), p(left, 2.2), p(right, 2.2)]
-    b = [p(spine, WB), p("M16 7 H9.5 M16 16 H12 M16 25 H9.5", WB),
-         p("M16 16 L23 8.5 M16 16 L23 23.5", WB)]
-    return a, b
-
-
-def c10_register():
-    """[EL] in the machine register - the lowercase-mono voice, as a mark."""
-    brackets = "M10.5 6.5 H7 V25.5 H10.5 M22.5 6.5 H26 V25.5 H22.5"
-    # The bottom bar has to run visibly past the top one or the figure reads
-    # as a bracketed E and the L disappears entirely.
-    inner = "M17 10 H13 V22 H21 M13 16 H16"
-    a = [p(brackets, 1.9), p(inner, 2.2)]
-    b = [p("M10 7 H7.5 V25 H10 M23 7 H25.5 V25 H23", 2.4),
-         p("M17 10.5 H13 V21.5 H21 M13 16 H16", WB)]
-    return a, b
+def h_counter():
+    """The letterform is the hole. Maximum contrast, and it holds up smallest."""
+    block = "M2 2 H30 V30 H2 Z"
+    cut = el_path(top_y=(6.5, 10.2), mid_y=(12.6, 16.0), bot_y=(20.4, 24.6),
+                  top=21.0, mid=18.5, bot=24.5, cut=2.0)
+    small = el_path(top_y=(6.5, 10.4), mid_y=(12.8, 16.0), bot_y=(20.2, 24.6),
+                    top=20.5, mid=18.0, bot=24.0, cut=1.4)
+    return ([path(block + " " + cut, rule="evenodd")],
+            [path("M1.5 1.5 H30.5 V30.5 H1.5 Z " + small, rule="evenodd")])
 
 
 CONCEPTS = [
-    ("01-waypoint",  "EL waypoint path",     "EL", c01_waypoint,
-     "The ligature read as a planned route; bar-ends are waypoints."),
-    ("02-formation", "EL formation",         "EL", c02_formation,
-     "L holds the axis, the E's bars sweep right like a flight of agents."),
-    ("03-frame",     "EL tf frame",          "EL", c03_frame,
-     "The L is the coordinate frame every robotics stack opens with."),
-    ("04-pulse",     "EL clock pulse",       "EL", c04_pulse,
-     "The E's middle stroke is a clock line. Embedded register."),
-    ("05-occupancy", "EL occupancy grid",    "EL", c05_occupancy,
-     "The letters drawn as occupied cells on a costmap."),
-    ("06-trace",     "EL PCB trace",         "EL", c06_trace,
-     "Routed like a board: 45-degree corners, vias at the terminals."),
-    ("07-rotor",     "EL quadrotor",         "EL", c07_rotor,
-     "The ligature is the airframe; each extremity carries a rotor."),
-    ("08-bt",        "KL behaviour tree",    "KL", c08_bt_kl,
-     "K as a root with two children, L as the ground it stands on."),
-    ("09-mirror",    "EEK mirrored spine",   "EEK", c09_mirror,
-     "One spine: E reflected into E, K taking the right side."),
-    ("10-register",  "[EL] register",        "EL", c10_register,
-     "Bracketed, in the lowercase-machine voice from brand/voice.md."),
+    ("a-slipstream", "EL slipstream", a_slipstream,
+     "One fused mass, leaning, terminals cut on the diagonal. The base mark."),
+    ("b-corner", "EL corner", b_corner,
+     "Two masses: a heavy L angle with a compact E set into its corner."),
+    ("c-contra", "EL contra", c_contra,
+     "A slab stem against arms pared to a third of its weight."),
+    ("d-stack", "EL stack", d_stack,
+     "E over L, offset - a staggered silhouette rather than one column."),
+    ("e-vector", "EL vector", e_vector,
+     "The foot runs out into an arrowhead. The mark points where it is going."),
+    ("f-wing", "EL wing", f_wing,
+     "Arms raked hard from root to tip. Squinted at, a swept wing."),
+    ("g-shield", "EL crest", g_shield,
+     "EL held in a crest - the only enclosed mark in the set."),
+    ("h-counter", "EL counter", h_counter,
+     "The letterform is the hole. Maximum contrast, holds up smallest."),
 ]
 
 
 def build():
     os.makedirs(OUT, exist_ok=True)
     written = []
-    for slug, label, initials, fn, _ in CONCEPTS:
+    for slug, label, fn, _ in CONCEPTS:
         primary, small = fn()
         files = {
-            "a": svg(paint(ind(primary)), f"{label} - primary"),
-            "b": svg(paint(ind(small)), f"{label} - small cut", size=20),
-            "c": svg(tile(ind(small)), f"{label} - tile"),
+            "a": svg(paint(leaned(ind(primary))), f"{label} - primary"),
+            "b": svg(paint(leaned(ind(small))), f"{label} - small cut", size=20),
+            "c": svg(tile(leaned(ind(small))), f"{label} - tile"),
+            "d": svg(leaned(ind(primary)), f"{label} - mono"),
         }
         for suffix, content in files.items():
-            path = os.path.join(OUT, f"{slug}-{suffix}.svg")
-            with open(path, "w", encoding="utf-8") as fh:
+            p = os.path.join(OUT, f"{slug}-{suffix}.svg")
+            with open(p, "w", encoding="utf-8") as fh:
                 fh.write(content)
-            written.append(path)
+            written.append(p)
     return written
 
 
 def check(paths):
-    """No gradients, no colours outside the brand. Same discipline as the mark."""
-    allowed = {ACCENT.lower(), GROUND.lower(), "currentColor", "none"}
+    allowed = {ACCENT.lower(), GROUND.lower()}
     bad = 0
-    for path in paths:
-        with open(path, encoding="utf-8") as fh:
-            src = fh.read()
-        found = set(re.findall(r"#[0-9a-fA-F]{6}", src))
-        stray = {c for c in found if c.lower() not in allowed}
+    for p in paths:
+        src = open(p, encoding="utf-8").read()
+        stray = {c for c in re.findall(r"#[0-9a-fA-F]{6}", src)
+                 if c.lower() not in allowed}
         if stray or "Gradient" in src or "url(#" in src:
-            print(f"FAIL {os.path.basename(path)}: {stray or 'gradient'}")
+            print(f"FAIL {os.path.basename(p)}: {stray or 'gradient'}")
             bad += 1
-    print(f"{len(paths) - bad}/{len(paths)} clean"
-          f"{'' if not bad else f' - {bad} need attention'}")
+        if "stroke=" in src:
+            print(f"FAIL {os.path.basename(p)}: uses stroke; these are solid forms")
+            bad += 1
+    print(f"{len(paths) - bad}/{len(paths)} clean")
     return bad
 
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--check", action="store_true")
-    args = ap.parse_args()
+    ap.parse_args()
     files = build()
     print(f"wrote {len(files)} files to {OUT}")
     check(files)

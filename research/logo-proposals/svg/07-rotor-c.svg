@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="EL quadrotor - tile">
-  <rect width="32" height="32" rx="6" fill="#0d0e12"/>
-    <path d="M11 7 H18 M11 7 V25 H22 M11 16 H16" fill="none" stroke="#8b95f0" stroke-width="3.0" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="11" cy="7" r="2.4" fill="#8b95f0"/>
-    <circle cx="25" cy="25" r="2.4" fill="#8b95f0"/>
-</svg>
