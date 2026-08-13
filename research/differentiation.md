@@ -82,8 +82,10 @@ and *Open Channel*.
 ### Brand mark
 
 The first mark was a monogram in a hexagon, which is generic and read poorly at
-small sizes. Replaced with the [swarm mark](../brand/logo.md) — three agents
-holding a formation.
+small sizes. Replaced with the [three-node mark](../brand/logo.md). It was first
+drawn as a closed triangle and read as a swarm formation; when the identity
+moved from swarms to planning in August 2026 the path was opened, and it now
+reads as a route through three waypoints.
 
 ## What is still owed
 

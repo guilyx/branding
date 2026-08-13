@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 32" width="140" height="32" role="img" aria-label="guilyx">
-  <path d="M16 8.5 L8.5 21 L23.5 21 Z" fill="none" stroke="currentColor" stroke-width="1.1" opacity="0.45"/>
+  <path d="M16 8.5 L8.5 21 L23.5 21" fill="none" stroke="currentColor" stroke-width="1.1" opacity="0.45"/>
   <g fill="currentColor">
     <circle cx="16" cy="8.5" r="2.1"/>
     <circle cx="8.5" cy="21" r="2.1"/>

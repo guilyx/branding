@@ -33,7 +33,7 @@ Full rationale, usage rules, and the runner-up in
 ```
 brand/
 ├── palette.md        current palette, usage rules, accessibility notes
-├── logo.md           the swarm mark — construction, sizing, misuse
+├── logo.md           the mark — construction, sizing, misuse
 └── voice.md          how the writing sounds
 research/
 ├── palette-study.md  the five candidates that were considered, and why
@@ -43,7 +43,8 @@ tokens/
 ├── tokens.json       design-token JSON
 └── tailwind.css      Tailwind v4 @theme block
 assets/
-└── logo/             SVG marks and favicons
+└── logo/             SVG marks and favicons, plus PNGs generated from them
+    └── render-png.sh regenerates every PNG; never edit the bitmaps by hand
 ```
 
 ## Attribution
