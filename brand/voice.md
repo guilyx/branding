@@ -13,9 +13,9 @@ either of you wincing?
 ## Rules
 
 **Lead with the concrete.** "Lead a robotics software team of 9 engineers
-developing decentralized autonomy frameworks for heterogeneous drone swarms"
-beats "passionate about robotics". Numbers, systems, and named technologies
-carry the weight.
+building mission planning, task allocation and behavior orchestration for
+heterogeneous drone fleets" beats "passionate about robotics". Numbers, systems,
+and named technologies carry the weight.
 
 **No superlatives about yourself.** Not "world-class", not "cutting-edge", not
 "passionate". The work is the argument.

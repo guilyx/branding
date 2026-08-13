@@ -13,17 +13,17 @@ has.
 
 | Role | Token | Hex | Notes |
 | :--- | :--- | :--- | :--- |
-| Ground | `--color-bg` | `#0d0e12` | Page background. Never lighten for "sections". |
-| Raised | `--color-bg-raised` | `#15171d` | Cards, panels, code blocks. |
-| Surface | `--color-surface` | `#15171d` | Alias of raised; kept separate so they can diverge later. |
-| Hairline | `--color-line` | `#252833` | Borders, rules, inactive timeline bars. |
-| Heading | `--color-heading` | `#e4e6ec` | Headings and emphasised inline text. |
-| Body | `--color-body` | `#a5aab8` | Running text. |
-| Muted | `--color-muted` | `#7c8291` | Secondary text, captions. |
-| Faint | `--color-faint` | `#555b69` | Labels, keys, disabled. Lowest legible step. |
+| Ground | `--color-bg` | `#12141b` | Page background. Never lighten for "sections". |
+| Raised | `--color-bg-raised` | `#1a1d26` | Cards, panels, code blocks. |
+| Surface | `--color-surface` | `#1a1d26` | Alias of raised; kept separate so they can diverge later. |
+| Hairline | `--color-line` | `#2c3040` | Borders, rules, inactive timeline bars. |
+| Heading | `--color-heading` | `#e8eaf0` | Headings and emphasised inline text. |
+| Body | `--color-body` | `#aeb3c2` | Running text. |
+| Muted | `--color-muted` | `#858b9c` | Secondary text, captions. |
+| Faint | `--color-faint` | `#616779` | Labels, keys, disabled. Lowest legible step. |
 | Accent | `--color-accent` | `#8b95f0` | See budget below. |
 | Accent wash | `--color-accent-soft` | `rgba(139,149,240,0.08)` | Hover fills only. |
-| Agent | `--color-agent` | `#7c8291` | The hero flock. Texture, not decoration — tracks `muted`. |
+| Agent | `--color-agent` | `#858b9c` | The hero flock. Texture, not decoration — tracks `muted`. |
 
 ## The accent budget
 
@@ -46,15 +46,22 @@ second saturated value.
 
 ## Contrast
 
-Checked against the ground (`#0d0e12`):
+Checked against the ground (`#12141b`):
 
 | Pair | Ratio | Verdict |
 | :--- | ---: | :--- |
-| heading on ground | 14.9:1 | AAA |
-| body on ground | 8.6:1 | AAA |
+| heading on ground | 15.3:1 | AAA |
+| body on ground | 8.8:1 | AAA |
 | muted on ground | 5.4:1 | AA (normal text) |
-| accent on ground | 7.6:1 | AAA |
-| faint on ground | 3.1:1 | **labels ≥ 14 px only** — not for running text |
+| accent on ground | 6.7:1 | AA (normal text) |
+| faint on ground | 3.3:1 | **labels ≥ 14 px only** — not for running text |
+
+Lifting the ground in August 2026 cost the accent its AAA rating: against the
+old `#0d0e12` it measured 7.6:1, against `#12141b` it measures 6.7:1. That is an
+accepted trade. The accent is spent on links, small mono labels and one active
+control at a time — never on running text — so AA is the bar that actually
+applies to it, and the lift bought back the raised surfaces and hairlines that
+were disappearing into the ground on OLED displays.
 
 `faint` is the one token that needs care: it is intended for mono keys and
 metadata at small-but-not-tiny sizes, never for prose. If a block of text needs
