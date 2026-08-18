@@ -1,8 +1,20 @@
 # Logo proposals — EL / EK as graphs
 
-**Status:** proposals, nothing adopted. The swarm mark in
+**Status:** proposals, nothing adopted. The three-node mark in
 [`../brand/logo.md`](../brand/logo.md) remains current until one of these
 replaces it.
+
+> **Snapshot, August 2026.** This round was drawn while the mark was still a
+> closed triangle and the ground was still `#0d0e12`. The files below are kept
+> as they were drawn rather than restyled — a research record is only worth
+> having if it records what was actually made. Two things have moved since, and
+> anything adopted from here has to be carried forward first:
+>
+> - The ground is now `#12141b` — see [`../brand/palette.md`](../brand/palette.md).
+>   The `-c` tiles and `generate.py` still bake the old value.
+> - The mark's path was opened and the brand moved from swarms to planning. The
+>   premise that motivated this round — an abstract mark says what the work is
+>   but nothing about whose it is — is unaffected by that and still stands.
 
 Eight monograms read as graphs. Files in
 [`logo-proposals/svg/`](logo-proposals/svg/), regenerate with
