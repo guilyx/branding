@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="EK pair - mono">
+  <path d="M6 7.4 L6 24.6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
+  <path d="M6 8 L12 8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+  <path d="M6 16 L12 16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+  <path d="M6 24 L12 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+  <path d="M18 6.4 L18 25.6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
+  <path d="M18 16 L26 7.6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+  <path d="M18 16 L26 24.4" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="18" cy="16" r="3.2" fill="currentColor"/>
+  <circle cx="26" cy="7.6" r="2.4" fill="currentColor"/>
+  <circle cx="26" cy="24.4" r="2.4" fill="currentColor"/>
+</svg>

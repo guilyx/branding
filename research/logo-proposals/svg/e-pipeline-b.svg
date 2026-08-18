@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="20" height="20" role="img" aria-label="EL pipeline - small cut">
+  <path d="M8 8 L8 24" fill="none" stroke="#8b95f0" stroke-width="3" stroke-linecap="round"/>
+  <path d="M8 8 L19.5 8" fill="none" stroke="#8b95f0" stroke-width="3.4" stroke-linecap="round"/>
+  <path d="M8 16 L17 16" fill="none" stroke="#8b95f0" stroke-width="3.4" stroke-linecap="round"/>
+  <path d="M8 24 L23.5 24" fill="none" stroke="#8b95f0" stroke-width="3.4" stroke-linecap="round"/>
+  <circle cx="19.5" cy="8" r="3" fill="#8b95f0"/>
+  <circle cx="17" cy="16" r="3" fill="#8b95f0"/>
+  <circle cx="23.5" cy="24" r="3" fill="#8b95f0"/>
+</svg>

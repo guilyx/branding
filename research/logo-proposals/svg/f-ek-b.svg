@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="20" height="20" role="img" aria-label="EK pair - small cut">
+  <path d="M6.5 7.4 L6.5 24.6" fill="none" stroke="#8b95f0" stroke-width="3" stroke-linecap="round"/>
+  <path d="M6.5 8 L12 8" fill="none" stroke="#8b95f0" stroke-width="3.2" stroke-linecap="round"/>
+  <path d="M6.5 16 L12 16" fill="none" stroke="#8b95f0" stroke-width="3.2" stroke-linecap="round"/>
+  <path d="M6.5 24 L12 24" fill="none" stroke="#8b95f0" stroke-width="3.2" stroke-linecap="round"/>
+  <path d="M19 6.4 L19 25.6" fill="none" stroke="#8b95f0" stroke-width="3" stroke-linecap="round"/>
+  <path d="M19 16 L26 8.4" fill="none" stroke="#8b95f0" stroke-width="3.2" stroke-linecap="round"/>
+  <path d="M19 16 L26 23.6" fill="none" stroke="#8b95f0" stroke-width="3.2" stroke-linecap="round"/>
+  <circle cx="19" cy="16" r="3.4" fill="#8b95f0"/>
+</svg>
